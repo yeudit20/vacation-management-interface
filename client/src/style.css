@@ -93,3 +93,8 @@ tbody tr:hover { background: #fafafa; }
 /* Utilities */
 .muted { color: var(--color-muted); }
 .spacer { height: 8px; }
+
+/* Alerts */
+.alert { padding: 10px 12px; border-radius: 8px; border: 1px solid; margin: 6px 0; }
+.alert-success { background:#ecfdf5; border-color:#a7f3d0; color:#065f46; }
+.alert-error { background:#fef2f2; border-color:#fecaca; color:#991b1b; }

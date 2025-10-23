@@ -1,8 +1,10 @@
-<template>
+﻿<template>
   <div class="grid-2">
     <section class="card">
       <h2>Submit Vacation Request</h2>
       <form @submit.prevent="submit">
+        <div v-if="error" class="alert alert-error">{{ error }}</div>
+        <div v-if="success" class="alert alert-success">{{ success }}</div>
         <label>
           User ID
           <input class="input-control" v-model.number="form.user_id" type="number" min="1" required />
@@ -19,7 +21,7 @@
           Reason
           <textarea class="input-control" v-model="form.reason" rows="2" placeholder="Optional"></textarea>
         </label>
-        <button class="btn btn-primary" type="submit">➕ Submit</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
       </form>
     </section>
 
@@ -30,7 +32,7 @@
           User ID
           <input class="input-control" v-model.number="filterUserId" type="number" min="1" />
         </label>
-        <button class="btn btn-ghost" @click="load">🔄 Refresh</button>
+        <button class="btn btn-ghost" @click="load">Refresh</button>
       </div>
       <div class="table-responsive" v-if="items.length">
         <table>
@@ -66,15 +68,47 @@ import api from '../web/api';
 const form = ref({ user_id: 1, start_date: '', end_date: '', reason: '' });
 const items = ref([]);
 const filterUserId = ref(1);
+const error = ref('');
+const success = ref('');
+
+function clearMessages(){ error.value=''; success.value=''; }
 
 async function submit() {
-  await api.post('/api/requests', form.value);
-  await load();
+  clearMessages();
+  // client-side validation
+  if (!form.value.user_id || form.value.user_id < 1) {
+    error.value = 'User ID must be a positive number';
+    return;
+  }
+  if (!form.value.start_date || !form.value.end_date) {
+    error.value = 'Please provide both start and end dates';
+    return;
+  }
+  if (new Date(form.value.end_date) < new Date(form.value.start_date)) {
+    error.value = 'End date must be on or after start date';
+    return;
+  }
+
+  try {
+    await api.post('/api/requests', form.value);
+    success.value = 'Request submitted successfully';
+    // optional reset
+    form.value.start_date = '';
+    form.value.end_date = '';
+    form.value.reason = '';
+    await load();
+  } catch (e) {
+    error.value = e?.response?.data?.error || e?.message || 'Failed to submit request';
+  }
 }
 
 async function load() {
-  const { data } = await api.get('/api/requests', { params: { user_id: filterUserId.value } });
-  items.value = data;
+  try {
+    const { data } = await api.get('/api/requests', { params: { user_id: filterUserId.value } });
+    items.value = data;
+  } catch (e) {
+    error.value = e?.response?.data?.error || e?.message || 'Failed to load requests';
+  }
 }
 
 onMounted(load);
@@ -83,6 +117,6 @@ onMounted(load);
 <style scoped>
 form { display: grid; gap: 10px; max-width: 520px; }
 label { display: grid; gap: 6px; font-size: 14px; }
-.filters { display:flex; gap:10px; align-items:end; margin-bottom:8px; }
+/* prevent overlap: make filter area two columns, input grows, button auto */
+.filters { display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:end; margin-bottom:8px; }
 </style>
-

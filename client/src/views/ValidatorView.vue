@@ -78,6 +78,8 @@ onMounted(load);
 </script>
 
 <style scoped>
-.filters { display: flex; gap: 10px; align-items: end; margin-bottom: 8px; }
-.actions { display: flex; gap: 6px; }
+.filters { display:grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-bottom: 8px; }
+.actions { display:flex; gap:6px; }
 </style>
+
+
