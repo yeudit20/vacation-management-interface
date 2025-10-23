@@ -4,16 +4,17 @@
     <div class="filters">
       <label>
         Status
-        <select v-model="status">
+        <select class="select-control" v-model="status">
           <option value="">All</option>
           <option>Pending</option>
           <option>Approved</option>
           <option>Rejected</option>
         </select>
       </label>
-      <button @click="load">Refresh</button>
+      <button class="btn btn-ghost" @click="load">🔄 Refresh</button>
     </div>
-    <table v-if="items.length">
+    <div class="table-responsive" v-if="items.length">
+    <table>
       <thead>
         <tr>
           <th>ID</th>
@@ -33,15 +34,16 @@
           <td>{{ r.reason || '-' }}</td>
           <td>
             <div v-if="r.status === 'Pending'" class="actions">
-              <button @click="approve(r.id)">Approve</button>
-              <input v-model="comment[r.id]" placeholder="Reject comment" />
-              <button @click="reject(r.id)">Reject</button>
+              <button class="btn btn-success" @click="approve(r.id)">✅ Approve</button>
+              <input class="input-control" v-model="comment[r.id]" placeholder="Reject comment" />
+              <button class="btn btn-danger" @click="reject(r.id)">❌ Reject</button>
             </div>
             <span v-else>-</span>
           </td>
         </tr>
       </tbody>
     </table>
+    </div>
     <p v-else>No requests.</p>
   </section>
 </template>
@@ -76,62 +78,6 @@ onMounted(load);
 </script>
 
 <style scoped>
-.filters {
-  display: flex;
-  gap: 10px;
-  align-items: end;
-  margin-bottom: 8px;
-}
-
-select,
-input {
-  padding: 6px 8px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 8px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-
-.badge {
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-.badge.pending {
-  background: #fff7ed;
-  color: #92400e;
-}
-
-.badge.approved {
-  background: #ecfdf5;
-  color: #065f46;
-}
-
-.badge.rejected {
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.actions {
-  display: flex;
-  gap: 6px;
-}
-
-button {
-  padding: 6px 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #f8fafc;
-}
+.filters { display: flex; gap: 10px; align-items: end; margin-bottom: 8px; }
+.actions { display: flex; gap: 6px; }
 </style>

@@ -1,54 +1,62 @@
-﻿<template>
-  <section class="card">
-    <h2>Submit Vacation Request</h2>
-    <form @submit.prevent="submit">
-      <label>
-        User ID
-        <input v-model.number="form.user_id" type="number" min="1" required />
-      </label>
-      <label>
-        Start Date
-        <input v-model="form.start_date" type="date" required />
-      </label>
-      <label>
-        End Date
-        <input v-model="form.end_date" type="date" required />
-      </label>
-      <label>
-        Reason
-        <textarea v-model="form.reason" rows="2" placeholder="Optional"></textarea>
-      </label>
-      <button type="submit">Submit</button>
-    </form>
-  </section>
+<template>
+  <div class="grid-2">
+    <section class="card">
+      <h2>Submit Vacation Request</h2>
+      <form @submit.prevent="submit">
+        <label>
+          User ID
+          <input class="input-control" v-model.number="form.user_id" type="number" min="1" required />
+        </label>
+        <label>
+          Start Date
+          <input class="input-control" v-model="form.start_date" type="date" required />
+        </label>
+        <label>
+          End Date
+          <input class="input-control" v-model="form.end_date" type="date" required />
+        </label>
+        <label>
+          Reason
+          <textarea class="input-control" v-model="form.reason" rows="2" placeholder="Optional"></textarea>
+        </label>
+        <button class="btn btn-primary" type="submit">➕ Submit</button>
+      </form>
+    </section>
 
-  <section class="card">
-    <h2>My Requests</h2>
-    <div class="filters">
-      <label>
-        User ID
-        <input v-model.number="filterUserId" type="number" min="1" />
-      </label>
-      <button @click="load">Refresh</button>
-    </div>
-    <table v-if="items.length">
-      <thead>
-        <tr>
-          <th>ID</th><th>Dates</th><th>Status</th><th>Reason</th><th>Comments</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="r in items" :key="r.id">
-          <td>{{ r.id }}</td>
-          <td>{{ r.start_date }} - {{ r.end_date }}</td>
-          <td><span :class="['badge', r.status.toLowerCase()]">{{ r.status }}</span></td>
-          <td>{{ r.reason || '-' }}</td>
-          <td>{{ r.comments || '-' }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <p v-else>No requests yet.</p>
-  </section>
+    <section class="card">
+      <h2>My Requests</h2>
+      <div class="filters">
+        <label>
+          User ID
+          <input class="input-control" v-model.number="filterUserId" type="number" min="1" />
+        </label>
+        <button class="btn btn-ghost" @click="load">🔄 Refresh</button>
+      </div>
+      <div class="table-responsive" v-if="items.length">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Dates</th>
+              <th>Status</th>
+              <th>Reason</th>
+              <th>Comments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="r in items" :key="r.id">
+              <td>{{ r.id }}</td>
+              <td>{{ r.start_date }} - {{ r.end_date }}</td>
+              <td><span :class="['badge', r.status.toLowerCase()]">{{ r.status }}</span></td>
+              <td>{{ r.reason || '-' }}</td>
+              <td>{{ r.comments || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p v-else>No requests yet.</p>
+    </section>
+  </div>
 </template>
 
 <script setup>
@@ -73,15 +81,8 @@ onMounted(load);
 </script>
 
 <style scoped>
-form { display: grid; gap: 8px; max-width: 520px; }
-label { display: grid; gap: 4px; font-size: 14px; }
-input, textarea { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
-.badge { padding: 2px 6px; border-radius: 6px; font-size: 12px; }
-.badge.pending { background:#fff7ed; color:#92400e; }
-.badge.approved { background:#ecfdf5; color:#065f46; }
-.badge.rejected { background:#fef2f2; color:#991b1b; }
+form { display: grid; gap: 10px; max-width: 520px; }
+label { display: grid; gap: 6px; font-size: 14px; }
 .filters { display:flex; gap:10px; align-items:end; margin-bottom:8px; }
 </style>
 
