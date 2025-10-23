@@ -1,106 +1,99 @@
-# 🏖 Vacation Management Interface (Draft)
+# Vacation Management Interface
 
-> **Note:** This README is an initial draft and will be updated as the implementation progresses.
+A small web app for managing employee vacation requests, built for the Web Development Intern recruitment test.
 
----
-
-## 📋 Overview
-
-This project was developed as part of a recruitment test for a Web Development Internship.  
-It implements a complete **Vacation Management System** with two main user roles:
-
-1. **Requester (Employee):** Submits and tracks vacation requests.  
-2. **Validator (Manager):** Reviews, approves, or rejects vacation requests.
-
-The project demonstrates full-stack development skills using **Vue.js**, **Node.js (Express)**, and a **relational database** such as PostgreSQL or MySQL.
+- Frontend: Vue 3, Vue Router, Axios
+- Backend: Node.js (Express)
+- Database: SQLite (via Knex) for local development; optional PostgreSQL for production
+- Tests: Jest + Supertest (backend)
 
 ---
 
-## 🚀 Planned Stack
+## Overview
 
-- **Frontend:** Vue.js, Vue Router, Axios  
-- **Backend:** Node.js, Express.js  
-- **Database:** PostgreSQL (or SQLite for local testing) via Sequelize ORM  
-- **Version Control:** Git + Bitbucket  
-- **Testing:** Jest (basic unit tests)
+Two user roles and flows:
+- Requester (Employee): submit a vacation request and view your requests and statuses.
+- Validator (Manager): list all requests, filter by status, approve or reject with an optional comment.
 
----
-
-## 🧩 Planned Features
-
-### Requester Interface
-- Submit vacation requests (start date, end date, optional reason).  
-- View submitted requests and their statuses: *Pending*, *Approved*, *Rejected*.
-
-### Validator Interface
-- View all submitted requests.  
-- Filter requests by status.  
-- Approve or reject requests with optional comments.
+The API follows RESTful conventions and includes basic input validation and error handling.
 
 ---
 
-## 🗄️ Database Structure (Planned)
+## How To Run (Local)
 
-### **Users Table**
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INT | Unique ID |
-| name | VARCHAR | Employee name |
-| role | ENUM(Requester, Validator) | Defines user type |
+Requirements: Node.js 18+
 
-### **Vacation Requests Table**
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INT | Unique request ID |
-| user_id | INT | Foreign key to `Users` |
-| start_date | DATE | Vacation start |
-| end_date | DATE | Vacation end |
-| reason | TEXT | Optional |
-| status | ENUM(Pending, Approved, Rejected) | Current status |
-| comments | TEXT | Validator feedback |
-| created_at | TIMESTAMP | Creation date |
+1) Backend (API)
+- `cd server`
+- `npm install`
+- `npm run migrate`
+- `npm run seed`
+- `npm run dev`
 
----
+Notes
+- API listens on `http://localhost:3001`
+- SQLite DB will be created at `server/db/dev.sqlite3`
+- Seed users: Requester id=1, Validator id=2
 
-## 🚀 Setup (To Be Finalized)
-
-```bash
-# Clone repository
-git clone https://bitbucket.org/<your-username>/vacation-management-interface.git
-cd vacation-management-interface
-
-# Install dependencies
-npm install
-cd client
-npm install
-
-# Run backend (development)
-npm run dev
-
-# Run frontend
-cd client
-npm run serve
-```
+2) Frontend (Web UI)
+- `cd client`
+- `npm install`
+- `npm run dev`
+- Open `http://localhost:5173` (Vite proxies `/api` to `http://localhost:3001`)
 
 ---
 
-## 🧠 Development Notes
-
-- Initial setup may use SQLite for speed, then switch to PostgreSQL.
-- The architecture will follow RESTful conventions.
-- UI/UX will focus on clarity and simplicity.
-
----
-
-## 🧾 Status
-
-### **🟡 Work in Progress** — Implementation phase pending.
-This file will be updated with final architecture, API routes, and setup instructions once development is complete.
+## API Summary
+- `GET /api/health` — health check
+- `POST /api/requests` — create { user_id, start_date, end_date, reason? }
+- `GET /api/requests` — list (query: `user_id?`, `status?`)
+- `POST /api/requests/:id/approve` — approve
+- `POST /api/requests/:id/reject` — reject { comments? }
 
 ---
 
-## 👩‍💻 Author
+## Database Schema
+Tables created by Knex migrations:
+- `users`: id (pk), name, role (Requester|Validator)
+- `vacation_requests`: id (pk), user_id (fk users.id), start_date, end_date, reason, status (Pending|Approved|Rejected), comments, created_at
 
-**Yehudit Shapira**  
-Full Stack Developer  
-https://github.com/yeudit20
+---
+
+## Tests (Backend)
+
+From the `server` directory:
+- `npm install`
+- `npm test`
+
+This runs Jest + Supertest integration tests that cover the health endpoint and request lifecycle (create, approve, reject).
+
+---
+
+## Technical Choices
+- Vue 3 + Vite: fast DX and simple router setup.
+- Express + Knex: minimal API with straightforward migrations/seeds; SQLite locally, PostgreSQL optionally for production.
+- Simple role model: demo-only — user id is entered manually on the Requester view to keep auth out of scope.
+
+Optional PostgreSQL
+- Install driver: in `server/` run `npm i pg`
+- Configure environment variables (`PG_HOST`, `PG_PORT`, `PG_DATABASE`, `PG_USER`, `PG_PASSWORD`)
+- Run with `NODE_ENV=production` for migrate/seed/start
+
+---
+
+## Known Limitations
+- No authentication/authorization — demo uses a manual user id.
+- No pagination — fine for small seed/test data.
+- Minimal validation — dates are validated and ordering is enforced; richer business rules are out of scope.
+
+---
+
+## Repository
+
+Code is hosted in a public Git repository (GitHub or Bitbucket are both acceptable per the assignment). Share your repo link with the reviewer.
+
+---
+
+## Author
+Yehudit Shapira — https://github.com/yeudit20
+

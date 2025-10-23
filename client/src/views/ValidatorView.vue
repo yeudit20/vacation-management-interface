@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="card">
     <h2>Validator Dashboard</h2>
     <div class="filters">
@@ -28,7 +28,7 @@
         <tr v-for="r in items" :key="r.id">
           <td>{{ r.id }}</td>
           <td>{{ r.user_id }}</td>
-          <td>{{ r.start_date }} → {{ r.end_date }}</td>
+          <td>{{ r.start_date }} - {{ r.end_date }}</td>
           <td><span :class="['badge', r.status.toLowerCase()]">{{ r.status }}</span></td>
           <td>{{ r.reason || '-' }}</td>
           <td>
